@@ -4,31 +4,28 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.net.Uri;
 import android.os.Bundle;
-import android.view.MotionEvent;
-import android.view.Surface;
-import android.view.SurfaceHolder;
-import android.view.SurfaceView;
+import android.util.Log;
 import android.view.View;
 import android.view.animation.TranslateAnimation;
-import android.widget.MediaController;
 import android.widget.TextView;
-import android.widget.Toast;
-import android.widget.VideoView;
 
 import com.github.rtoshiro.view.video.FullscreenVideoLayout;
+import com.rommansabbir.swipeeventlistener.SwipeEventListener;
 
 import java.io.IOException;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements SwipeEventListener.SwipeEventListenerInterface {
     private TextView textViewGesture;
     private View fullScreenLayout;
     private View playlistLayout;
     private FullscreenVideoLayout videoLayout;
-
+    private static final String TAG = "MainActivity";
+    private SwipeEventListener touchListener;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        touchListener = new SwipeEventListener(this);
         fullScreenLayout = findViewById(R.id.fullScreenLayout);
         playlistLayout = findViewById(R.id.playlistLayout);
         playlistLayout.setVisibility(View.GONE);
@@ -45,43 +42,7 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-//        textViewGesture = findViewById(R.id.textViewGesture);
-        fullScreenLayout.setOnTouchListener(new OnSwipeTouchListner(this){
-            public void onSwipeTop() {
-//                textViewGesture.setText("Swipe Top");
-                if(playlistLayout.getVisibility() == View.GONE){
-
-                    swipeUpAnimation(playlistLayout.getHeight(), 0);
-
-                    playlistLayout.setVisibility(View.VISIBLE);
-                }
-                else {
-                    playlistLayout.setVisibility(View.GONE);
-                }
-            }
-
-            public void onSwipeRight() {
-//                textViewGesture.setText("Swipe Right");
-            }
-
-            public void onSwipeLeft() {
-//                textViewGesture.setText("Swipe Left");
-            }
-
-            public void onSwipeBottom() {
-//                textViewGesture.setText("Swipe Bottom");
-                if(playlistLayout.getVisibility() == View.VISIBLE){
-
-                    swipeBottomAnimation(0, playlistLayout.getHeight());
-
-                    playlistLayout.setVisibility(View.GONE);
-
-                }
-                else {
-                    playlistLayout.setVisibility(View.VISIBLE);
-                }
-            }
-        });
+        fullScreenLayout.setOnTouchListener(touchListener);
     }
 
 
@@ -101,5 +62,44 @@ public class MainActivity extends AppCompatActivity {
         animate.setDuration(500);
         animate.setFillAfter(true);
         playlistLayout.startAnimation(animate);
+    }
+
+    @Override
+    public void onSwipeRight() {
+        Log.d(TAG, "onSwipeRight: ");
+    }
+
+    @Override
+    public void onSwipeLeft() {
+        Log.d(TAG, "onSwipeLeft: ");
+    }
+
+    @Override
+    public void onSwipeTop() {
+        Log.d(TAG, "onSwipeTop: ");
+        if(playlistLayout.getVisibility() == View.GONE){
+
+            swipeUpAnimation(playlistLayout.getHeight(), 0);
+
+            playlistLayout.setVisibility(View.VISIBLE);
+        }
+        else {
+            playlistLayout.setVisibility(View.GONE);
+        }
+    }
+
+    @Override
+    public void onSwipeBottom() {
+        Log.d(TAG, "onSwipeBottom: ");
+        if(playlistLayout.getVisibility() == View.VISIBLE){
+
+            swipeBottomAnimation(0, playlistLayout.getHeight());
+
+            playlistLayout.setVisibility(View.GONE);
+
+        }
+        else {
+            playlistLayout.setVisibility(View.VISIBLE);
+        }
     }
 }
